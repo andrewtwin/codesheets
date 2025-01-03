@@ -35,7 +35,7 @@ def generateCodeDict(rows: int = 20, cols: int = 4, code_len: int = 5, **kwargs)
 
 def main() -> None:
     # Generate the dictionary of codes
-    codes = generateCodeDict(rows=4, cols=10, code_len=4)
+    codes = generateCodeDict(rows=40, cols=10, code_len=4)
 
     # Create a sheet ID and center it at the top along with the allowed symbols
     sheetWidth = len(printRow(codes, 1, gap=2))
