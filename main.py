@@ -1,10 +1,11 @@
 import secrets
 
 LETTERS = "DEFHJLMPQRSUXYZ"
+NUMBERS = "0346789"
+SYMBOLS = LETTERS + NUMBERS
 
 def generateCode(len: int = 8) -> str:
-    symbols = LETTERS + "0123456789"
-    return ''.join(secrets.choice(symbols) for i in range(len))
+    return ''.join(secrets.choice(SYMBOLS) for i in range(len))
 
 def printColNames(c: dict, gap: int = 1, **kwargs) -> str:
     header = " " * (len(str(len(c))) + 1) 
@@ -32,14 +33,24 @@ def generateCodeDict(rows: int = 20, cols: int = 4, code_len: int = 5, **kwargs)
         c[i] = row
     return c
 
-# Generate the dictionary of codes
-codes = generateCodeDict(rows=40, cols=12, code_len=4)
+def main() -> None:
+    # Generate the dictionary of codes
+    codes = generateCodeDict(rows=4, cols=10, code_len=4)
 
-# Format and print the codes
-colum_names = printColNames(codes, gap=2)
-print(colum_names)
-for i in codes.keys():
-    print(printRow(codes, i, gap=2))
-    if i % 10 == 0 and i < len(codes):
-            print()
-            print(colum_names)
+    # Create a sheet ID and center it at the top along with the allowed symbols
+    sheetWidth = len(printRow(codes, 1, gap=2))
+    print(f"{'  ' + generateCode(8) + '  ':{'*'}{'^'}{sheetWidth}}"+"\n")
+    print(f"{" ".join(sorted(SYMBOLS)):{' '}{'^'}{sheetWidth}}"+"\n")
+
+    # Format and print the codes
+    colum_names = printColNames(codes, gap=2)
+    print(colum_names)
+    for i in codes.keys():
+        print(printRow(codes, i, gap=2))
+        if i % 10 == 0 and i < len(codes):
+                print()
+                print(colum_names)
+
+
+if __name__ == "__main__":
+    main()
