@@ -65,7 +65,7 @@ def main() -> None:
 
         print("\n"+f"{'*' * sheet_width}", file=output)
 
-        print(f"{text_file_name} and {json_file_name} created.")
+    print(f"{text_file_name} and {json_file_name} created.")
 
 if __name__ == "__main__":
     main()
