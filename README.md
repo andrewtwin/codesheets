@@ -1,5 +1,6 @@
 # Introduction
 Simple program to generate "code sheets" for a game.
+Creates text and json files.
 
 # Usage
 Not parameratised yet, just modify the program before running.
