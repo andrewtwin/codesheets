@@ -38,14 +38,16 @@ def main() -> None:
     # Generate the dictionary of codes
     codes = generateCodeDict(rows=40, cols=15, code_len=3)
     sheet_name = generateCode(8)
+    text_file_name = f"codes_{sheet_name}.txt"
+    json_file_name = f"codes_{sheet_name}.json"
     code_file = dict([('sheet_name', sheet_name), ('codes',  codes)])
     sheet_width = len(printRow(codes, 1, gap=1)) + 1
 
     # Write the coes to a json file
-    with open(f"{sheet_name}.json", 'w', encoding='utf-8') as jf:
+    with open(json_file_name, 'w', encoding='utf-8') as jf:
         json.dump(code_file, jf, ensure_ascii=False, separators=(',', ':'), indent=None)
 
-    with open(f"{sheet_name}.txt", 'w', encoding="utf-8") as tf:
+    with open(text_file_name, 'w', encoding="utf-8") as tf:
         output = tf
 
         # Create a sheet ID and center it at the top along with the allowed symbols
@@ -55,13 +57,15 @@ def main() -> None:
         # Format and print the codes
         colum_names = printColNames(codes, gap=1)
         print(colum_names, file=output)
-        for i in codes.keys():
+        for i in codes:
             print(printRow(codes, i, gap=1), file=output)
             if i % 10 == 0 and i < len(codes):
                 print(file=output)
                 print(colum_names, file=output)
 
         print("\n"+f"{'*' * sheet_width}", file=output)
+
+        print(f"{text_file_name} and {json_file_name} created.")
 
 if __name__ == "__main__":
     main()
