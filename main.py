@@ -1,4 +1,5 @@
 import secrets
+import json
 
 LETTERS = "DEFHIJLMPQRSUXYZ"
 NUMBERS = "0346789"
@@ -37,22 +38,30 @@ def main() -> None:
     # Generate the dictionary of codes
     codes = generateCodeDict(rows=40, cols=15, code_len=3)
     sheet_name = generateCode(8)
-
-    # Create a sheet ID and center it at the top along with the allowed symbols
+    code_file = dict([('sheet_name', sheet_name), ('codes',  codes)])
     sheet_width = len(printRow(codes, 1, gap=1)) + 1
-    print(f"{'  ' + sheet_name + '  ':{'*'}{'^'}{sheet_width}}"+"\n")
-    print(f"{' ' + ' '.join(sorted(SYMBOLS)) + ' ':{'*'}{'^'}{sheet_width}}"+"\n")
 
-    # Format and print the codes
-    colum_names = printColNames(codes, gap=1)
-    print(colum_names)
-    for i in codes.keys():
-        print(printRow(codes, i, gap=1))
-        if i % 10 == 0 and i < len(codes):
-            print()
-            print(colum_names)
+    # Write the coes to a json file
+    with open(f"{sheet_name}.json", 'w', encoding='utf-8') as jf:
+        json.dump(code_file, jf, ensure_ascii=False, separators=(',', ':'), indent=None)
 
-    print("\n"+f"{'*' * sheet_width}")
+    with open(f"{sheet_name}.txt", 'w', encoding="utf-8") as tf:
+        output = tf
+
+        # Create a sheet ID and center it at the top along with the allowed symbols
+        print(f"{'  ' + sheet_name + '  ':{'*'}{'^'}{sheet_width}}"+"\n", file=output)
+        print(f"{' ' + ' '.join(sorted(SYMBOLS)) + ' ':{'*'}{'^'}{sheet_width}}"+"\n", file=output)
+
+        # Format and print the codes
+        colum_names = printColNames(codes, gap=1)
+        print(colum_names, file=output)
+        for i in codes.keys():
+            print(printRow(codes, i, gap=1), file=output)
+            if i % 10 == 0 and i < len(codes):
+                print(file=output)
+                print(colum_names, file=output)
+
+        print("\n"+f"{'*' * sheet_width}", file=output)
 
 if __name__ == "__main__":
     main()
