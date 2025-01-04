@@ -18,7 +18,7 @@ def printRow(c: dict, row_num: int, gap: int = 1, **kwargs) -> str:
     index_str_len = len(str(len(c)))
     seperator = " " * gap
     row = seperator.join(c[row_num][code] for code in list(c[row_num]))
-    return f"{row_num:{' '}{'<'}{index_str_len}} {row} {row_num}"
+    return f"{row_num:{' '}{'<'}{index_str_len}} {row} {row_num:{' '}{'>'}}"
 
 def generateCodeDict(rows: int = 20, cols: int = 4, code_len: int = 5, **kwargs) -> dict:
     column_letters = LETTERS
@@ -41,7 +41,7 @@ def main() -> None:
     # Create a sheet ID and center it at the top along with the allowed symbols
     sheet_width = len(printRow(codes, 1, gap=1)) + 1
     print(f"{'  ' + sheet_name + '  ':{'*'}{'^'}{sheet_width}}"+"\n")
-    print(f"{" ".join(sorted(SYMBOLS)):{' '}{'^'}{sheet_width}}"+"\n")
+    print(f"{' ' + ' '.join(sorted(SYMBOLS)) + ' ':{'*'}{'^'}{sheet_width}}"+"\n")
 
     # Format and print the codes
     colum_names = printColNames(codes, gap=1)
