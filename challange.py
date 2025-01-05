@@ -1,6 +1,14 @@
 import secrets
 import json
 import sys
+import pathlib
+
+def load_sheets(code_dir: str) -> list:
+    sheets = list()
+    files = [f for f in pathlib.Path().glob(f"{code_dir}/*.json")]
+    for file in files:
+        sheets.append(load_sheet(file))
+    return sheets
 
 def load_sheet(code_file: str) -> dict:
     with open(code_file, 'r', encoding='UTF8') as file:
@@ -12,14 +20,50 @@ def pick_code(codes: dict) -> dict:
     row = codes['codes'][row_num]
     col = secrets.choice(list(row))
     code = row[col]
-    return dict([('sheet', sheet_name), ('index', f"{col}{row_num}"), ('code', code)])
+    return dict([('sheet', sheet_name), ('row', row_num), ('col' , col), ('code', code)])
 
-def main(sheet_name):
-    codes = load_sheet(sheet_name)
-    code = pick_code(codes)
-    print(f"Sheet {code['sheet']}")
-    print(f"Index {code['index']}")
-    print(f"Code  {code['code']}")
+def check_code(sheets: list, row_num: str, col: str, code: str) -> str:
+    for sheet in sheets:
+        row = sheet['codes'].get(row_num)
+        if row is None:
+            print('Invalid Row')
+        else:
+            stored_code = row.get(col)
+            if stored_code is None:
+                print('Invalid Column')
+            else:
+                if code == stored_code:
+                    return sheet.get('sheet_name')
+
+def main(sheets_dir):
+    sheets = load_sheets(sheets_dir)
+    num_sheets = len(sheets)
+    correct = 0
+    
+    for i in range(num_sheets):
+
+        sheet = secrets.choice(sheets)
+        code = pick_code(sheet)
+        print(f"Sheets left: {len(sheets)}")
+        print(f"Sheet {code['sheet']}")
+        print(f"Index {code['col']}{code['row']}")
+        print(f"Code  {code['code']}")
+        print()
+
+        code_input = input(f"Guess {i+1} of {num_sheets}, what is the code for {code['col']}{code['row']}? ").upper()
+        sheet_name = check_code(sheets, code['row'], code['col'], code_input)
+
+        if sheet_name is None:
+            print("Code not found in sheets")
+        else:
+            print(f"Code found in sheet wth a {secrets.choice(sheet_name)} in its name!")
+            correct += 1
+            sheets.remove(sheet)
+
+    if correct == num_sheets:
+        print("You win!")
+    else:
+        print("Try again!")
 
 if __name__ == "__main__":
-    main(sheet_name = sys.argv[1])
+    main(sys.argv[1])
