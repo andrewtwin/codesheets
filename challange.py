@@ -34,6 +34,17 @@ def check_code(sheets: list, row_num: str, col: str, code: str) -> dict:
             else:
                 if code == stored_code:
                     return sheet
+                
+def redact_name(name: str, redact_char: str = "*", clear_letters:int = 1) -> str:
+    redacted_name = list(redact_char * len(name))
+    letters_in_clear = 0
+    while letters_in_clear < clear_letters:
+        letter = secrets.choice(range(len(name)))
+        if redacted_name[letter] == "*":
+            redacted_name[letter] = name[letter]
+            letters_in_clear += 1
+
+    return (''.join(char  for char in redacted_name))
 
 def main(sheets_dir):
     sheets = load_sheets(sheets_dir)
@@ -45,7 +56,7 @@ def main(sheets_dir):
         sheet = secrets.choice(sheets)
         code = pick_code(sheet)
         
-        if False:
+        if True:
             print(f"Sheets left: {len(sheets)}")
             print(f"Sheet {code['sheet']}")
             print(f"Index {code['col']}{code['row']}")
@@ -58,7 +69,7 @@ def main(sheets_dir):
         if found_sheet is None:
             print("Code not found in your code sheets")
         else:
-            print(f"Code found in sheet wth a {secrets.choice(found_sheet['sheet_name'])} in its name!")
+            print(f"Code found! Sheet removed for remaning guesses.")
             correct += 1
             sheets.remove(found_sheet)
 
@@ -66,6 +77,8 @@ def main(sheets_dir):
         print("You win!")
     else:
         print(f"{correct} of {num_sheets} correct, try again!")
+        print("Missing sheets:")
+        print("\n".join(redact_name(sheet['sheet_name']) for sheet in sheets))
 
 if __name__ == "__main__":
     main(sys.argv[1])
