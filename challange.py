@@ -22,7 +22,7 @@ def pick_code(codes: dict) -> dict:
     code = row[col]
     return dict([('sheet', sheet_name), ('row', row_num), ('col' , col), ('code', code)])
 
-def check_code(sheets: list, row_num: str, col: str, code: str) -> str:
+def check_code(sheets: list, row_num: str, col: str, code: str) -> dict:
     for sheet in sheets:
         row = sheet['codes'].get(row_num)
         if row is None:
@@ -33,7 +33,7 @@ def check_code(sheets: list, row_num: str, col: str, code: str) -> str:
                 print('Invalid Column')
             else:
                 if code == stored_code:
-                    return sheet.get('sheet_name')
+                    return sheet
 
 def main(sheets_dir):
     sheets = load_sheets(sheets_dir)
@@ -44,26 +44,28 @@ def main(sheets_dir):
 
         sheet = secrets.choice(sheets)
         code = pick_code(sheet)
-        print(f"Sheets left: {len(sheets)}")
-        print(f"Sheet {code['sheet']}")
-        print(f"Index {code['col']}{code['row']}")
-        print(f"Code  {code['code']}")
-        print()
+        
+        if False:
+            print(f"Sheets left: {len(sheets)}")
+            print(f"Sheet {code['sheet']}")
+            print(f"Index {code['col']}{code['row']}")
+            print(f"Code  {code['code']}")
+            print()
 
         code_input = input(f"Guess {i+1} of {num_sheets}, what is the code for {code['col']}{code['row']}? ").upper()
-        sheet_name = check_code(sheets, code['row'], code['col'], code_input)
+        found_sheet = check_code(sheets, code['row'], code['col'], code_input)
 
-        if sheet_name is None:
-            print("Code not found in sheets")
+        if found_sheet is None:
+            print("Code not found in your code sheets")
         else:
-            print(f"Code found in sheet wth a {secrets.choice(sheet_name)} in its name!")
+            print(f"Code found in sheet wth a {secrets.choice(found_sheet['sheet_name'])} in its name!")
             correct += 1
-            sheets.remove(sheet)
+            sheets.remove(found_sheet)
 
     if correct == num_sheets:
         print("You win!")
     else:
-        print("Try again!")
+        print(f"{correct} of {num_sheets} correct, try again!")
 
 if __name__ == "__main__":
     main(sys.argv[1])
