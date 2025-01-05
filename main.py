@@ -34,10 +34,10 @@ def generateCodeDict(rows: int = 20, cols: int = 4, code_len: int = 5, **kwargs)
         c[i] = row
     return c
 
-def main() -> None:
+def main(rows: int = 10, cols: int = 10, code_len: int = 3, print_symbols: bool = False) -> None:
     # Generate the dictionary of codes
-    codes = generateCodeDict(rows=40, cols=15, code_len=3)
-    sheet_name = generateCode(8)
+    codes = generateCodeDict(rows=rows, cols=cols, code_len=code_len)
+    sheet_name = generateCode(4)
     text_file_name = f"codes_{sheet_name}.txt"
     json_file_name = f"codes_{sheet_name}.json"
     code_file = dict([('sheet_name', sheet_name), ('codes',  codes)])
@@ -52,7 +52,10 @@ def main() -> None:
 
         # Create a sheet ID and center it at the top along with the allowed symbols
         print(f"{'  ' + sheet_name + '  ':{'*'}{'^'}{sheet_width}}"+"\n", file=output)
-        print(f"{' ' + ' '.join(sorted(SYMBOLS)) + ' ':{'*'}{'^'}{sheet_width}}"+"\n", file=output)
+
+        if print_symbols:
+            print(f"{' ' + ' '.join(sorted(SYMBOLS))\
+                     + ' ':{'*'}{'^'}{sheet_width}}"+"\n", file=output)
 
         # Format and print the codes
         colum_names = printColNames(codes, gap=1)
