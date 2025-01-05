@@ -3,6 +3,8 @@ Simple program to generate "code sheets" for a game.
 
 Creates text and json files.
 
+Very much a work in progress!
+
 # Usage
 Not parameratised yet, just modify the program before running.
 
